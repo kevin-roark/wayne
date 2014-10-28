@@ -19,12 +19,23 @@ $(function() {
     camera.position.set(0, 0, 10);
   }
   resetRendererSize();
-  $(window).resize(resetRendererSize);
 
 	document.body.appendChild(renderer.domElement);
 
+  var backToYou = new Audio('media/back_to_you.mp3');
+  backToYou.preload = 'auto';
+  backToYou.loop = true;
+  backToYou.autoplay = true;
+
   var wayne = makeWayne();
   scene.add(wayne);
+
+  var mouseState = {};
+
+  $(window).resize(resetRendererSize);
+  $('body').mousemove(function(e) {
+    mouse(e.pageX, e.pageY);
+  });
 
   function start() {
     render();
@@ -42,11 +53,22 @@ $(function() {
       color: 0xffffff
     });
 
-    var geometry = new THREE.BoxGeometry(2, 2, 2);
+    var size = 4;
+    var geometry = new THREE.BoxGeometry(size, size, size);
 
     var mesh = new THREE.Mesh(geometry);
     
     return mesh;
+  }
+
+  function mouse(x, y) {
+    if (mouseState.x) {
+      wayne.rotation.y += (x - mouseState.x) / 250;
+      wayne.rotation.x += (y - mouseState.y) / 240;
+    }
+
+    mouseState.x = x;
+    mouseState.y = y;
   }
 
 
