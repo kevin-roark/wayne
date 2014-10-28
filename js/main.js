@@ -1,7 +1,15 @@
 $(function() {
 
+  var TIMELINE_PAD = 50;
+  var DEFAULT_WAYNE_SIZE = 48;
+  
+  var RENDER_TIME = 24;
+
   var scene = new THREE.Scene();
   var camera;
+
+  var timeline = $('.timeline');
+  var wayneMarker = $('.wayne-marker');
 
   var renderer;
   var rendermode = 'webgl';
@@ -17,6 +25,11 @@ $(function() {
 
     camera = new THREE.PerspectiveCamera(65, window.innerWidth/window.innerHeight, 1, 3000);
     camera.position.set(0, 0, 10);
+
+    timeline.css('left', TIMELINE_PAD + 'px');
+    timeline.css('width', window.innerWidth - TIMELINE_PAD * 2);
+
+    wayneMarker.css('top', '-' + DEFAULT_WAYNE_SIZE / 2 + 'px');
   }
   resetRendererSize();
 
@@ -43,7 +56,9 @@ $(function() {
   start();
 
   function render() {
-    window.requestAnimationFrame(render, 20);
+    window.requestAnimationFrame(render, RENDER_TIME);
+
+    updateWayneMarker();
 
     renderer.render(scene, camera);
   }
@@ -71,5 +86,16 @@ $(function() {
     mouseState.y = y;
   }
 
+  function updateWayneMarker() {
+    if (!backToYou.duration) return;
+
+    var end = timeline.width();
+    var fraction = backToYou.currentTime / backToYou.duration;
+    var position = fraction * end;
+
+    wayneMarker.animate({
+      left: position + 'px'
+    }, RENDER_TIME);
+  }
 
 });

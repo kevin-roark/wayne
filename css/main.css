@@ -12,3 +12,20 @@ body {
 canvas {
   cursor: none;
 }
+
+.timeline {
+  position: absolute;
+
+  height: 1px;
+  background-color: white;
+
+  bottom: 84px;
+}
+
+.wayne-marker {
+  position: absolute;
+}
+
+.wayne-marker img {
+
+}
