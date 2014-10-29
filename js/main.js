@@ -35,13 +35,22 @@ $(function() {
 
 	document.body.appendChild(renderer.domElement);
 
+  var light = new THREE.AmbientLight(0x404040); // soft white light
+  scene.add(light);
+
+  var hemilight = new THREE.HemisphereLight(0xaaaaff, 0x000000, 5.0);
+  scene.add(hemilight);
+
   var backToYou = new Audio('media/back_to_you.mp3');
   backToYou.preload = 'auto';
   backToYou.loop = true;
   backToYou.autoplay = true;
 
-  var wayne = makeWayne();
-  scene.add(wayne);
+  var wayne;
+  makeWayne(function(mesh) {
+    wayne = mesh;
+    scene.add(wayne);
+  });
 
   var mouseState = {};
 
@@ -60,26 +69,28 @@ $(function() {
 
     updateWayneMarker();
 
+    idleWayne();
+
     renderer.render(scene, camera);
   }
 
-  function makeWayne() {
-    var material = new THREE.MeshBasicMaterial({
-      color: 0xffffff
+  function makeWayne(callback) {
+    var loader = new THREE.JSONLoader;
+
+    loader.load('models/wayne.js', function (geometry, materials) {
+      var mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
+      
+      var scale = 3;
+      mesh.scale.set(scale, scale, scale);
+
+      callback(mesh);
     });
-
-    var size = 4;
-    var geometry = new THREE.BoxGeometry(size, size, size);
-
-    var mesh = new THREE.Mesh(geometry);
-    
-    return mesh;
   }
 
   function mouse(x, y) {
     if (mouseState.x) {
-      wayne.rotation.y += (x - mouseState.x) / 250;
-      wayne.rotation.x += (y - mouseState.y) / 240;
+      wayne.rotation.y += (x - mouseState.x) / 150;
+      wayne.rotation.x += (y - mouseState.y) / 150;
     }
 
     mouseState.x = x;
@@ -96,6 +107,29 @@ $(function() {
     wayneMarker.animate({
       left: position + 'px'
     }, RENDER_TIME);
+  }
+
+  function idleWayne() {
+    if (!wayne) return;
+
+    wayne.rotation.y += 0.02;
+
+    var scalar = 0.05;
+
+    var vertices = wayne.geometry.vertices;
+    for (var i = 0; i < 10; i++) {
+      var index = Math.floor(Math.random() * vertices.length);
+      
+      vertices[index].x += pneg() * scalar;
+      vertices[index].y += pneg() * scalar;
+      vertices[index].z += pneg() * scalar;
+    }
+
+    wayne.geometry.verticesNeedUpdate = true;
+  }
+
+  function pneg() {
+    return Math.random() - 0.5;
   }
 
 });
