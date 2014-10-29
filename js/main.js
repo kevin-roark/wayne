@@ -89,8 +89,8 @@ $(function() {
 
   function mouse(x, y) {
     if (mouseState.x) {
-      wayne.rotation.y += (x - mouseState.x) / 150;
-      wayne.rotation.x += (y - mouseState.y) / 150;
+      wayne.rotation.y += (x - mouseState.x) / 100;
+      wayne.rotation.x += (y - mouseState.y) / 50;
     }
 
     mouseState.x = x;
