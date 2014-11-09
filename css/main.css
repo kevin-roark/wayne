@@ -29,3 +29,24 @@ canvas {
 .wayne-marker img {
 
 }
+
+.ender {
+  display: none;
+
+  font-family: monospace;
+  font-size: 120px;
+
+  text-align: center;
+  color: red;
+
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+  left: 0;
+  top: 35%;
+}
+
+.ender a {
+  color: red;
+  text-decoration: none;
+}

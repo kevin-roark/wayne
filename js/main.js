@@ -45,6 +45,8 @@ $(function() {
   backToYou.preload = 'auto';
   backToYou.loop = true;
   backToYou.autoplay = true;
+  //backToYou.playbackRate = 10;
+  //backToYou.volume = 0;
 
   var wayne;
   makeWayne(function(mesh) {
@@ -54,7 +56,7 @@ $(function() {
 
   var mouseState = {};
 
-  var active = {idle: false};
+  var active = {idle: false, ended: false};
 
   $(window).resize(resetRendererSize);
   $('body').mousemove(function(e) {
@@ -63,6 +65,11 @@ $(function() {
 
   function start() {
     render();
+
+    $('.ender').fadeIn();
+    setTimeout(function() {
+      $('.ender').fadeOut();
+    }, 1000);
 
     setTimeout(function() {
       active.idle = true;
@@ -77,7 +84,15 @@ $(function() {
 
     if (active.idle) idleWayne();
 
+    if (songIsOver() && !active.ended) {
+       endgame(); 
+    }
+
     renderer.render(scene, camera);
+  }
+
+  function endgame() {
+    $('.ender').fadeIn();
   }
 
   function makeWayne(callback) {
@@ -89,7 +104,7 @@ $(function() {
       var scale = 3;
       mesh.scale.set(scale, scale, scale);
 
-      mesh.position.set(0, 1, -0.25);
+      mesh.position.set(-1, 1, -0.25);
 
       mesh.rotation.x = 1.2;
 
@@ -114,13 +129,20 @@ $(function() {
     var fraction = backToYou.currentTime / backToYou.duration;
     var position = fraction * end;
 
-    wayneMarker.animate({
-      left: position + 'px'
-    }, RENDER_TIME);
+    wayneMarker.css('left', position + 'px');
+  }
+
+  function songIsOver() {
+    if (backToYou.currentTime < 30) return false;
+    if (backToYou.paused) return true;
+    if (backToYou.ended) return true;
+    if (Math.abs(backToYou.currentTime - backToYou.duration) < 1) return true;
+
+    return false; 
   }
 
   function idleWayne() {
-    if (!wayne) return;
+    if (!wayne || songIsOver()) return;
 
     var rapping = backToYou.currentTime > 31.7;
 
@@ -128,10 +150,12 @@ $(function() {
 
     var fraction = backToYou.currentTime / backToYou.duration;
 
-    var scale = 3 + 4 * fraction;
+    var scale = 3 + 2.8 * fraction;
     wayne.scale.set(scale, scale, scale);
 
-    var scalar = (rapping)? 0.17 * fraction : 0.0;
+    var scalar = (rapping)? 0.13 * fraction : 0.0;
+
+    if (Math.random() > fraction + 0.5) return;
 
     var vertices = wayne.geometry.vertices;
     for (var i = 0; i < 10; i++) {
