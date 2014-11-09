@@ -18,6 +18,8 @@ $(function() {
     renderer.setClearColor(0x000000, 1);
   } catch(e) {
     console.log('f u');
+    renderer = new THREE.CanvasRenderer();
+    renderer.setClearColor(0x000000, 1);
   }
 
   function resetRendererSize() {
