@@ -45,7 +45,7 @@ $(function() {
   backToYou.preload = 'auto';
   backToYou.loop = true;
   backToYou.autoplay = true;
-  //backToYou.playbackRate = 10;
+  //backToYou.playbackRate = 50;
   //backToYou.volume = 0;
 
   var wayne;
@@ -82,13 +82,16 @@ $(function() {
   function render() {
     window.requestAnimationFrame(render, RENDER_TIME);
 
-    updateWayneMarker();
+    var songOver = songIsOver();
+
+    if (!songOver) updateWayneMarker();
 
     if (active.idle) idleWayne();
 
-    if (songIsOver() && !active.ended) {
+    if (songOver && !active.ended) {
        endgame(); 
     }
+
 
     renderer.render(scene, camera);
   }
@@ -136,6 +139,10 @@ $(function() {
     console.log(wayneRot);
     wayneRot += 0.1;
     window.kt.rotate(wayneMarker, wayneRot);
+
+    var fraction = backToYou.currentTime / backToYou.duration;
+    var maxScale = fraction * 6 + 1;
+    if (Math.random() > 0.8) window.kt.scale(wayneMarker, Math.random() * maxScale);
   }
 
   function songIsOver() {
