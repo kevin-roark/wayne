@@ -54,6 +54,8 @@ $(function() {
 
   var mouseState = {};
 
+  var active = {idle: false};
+
   $(window).resize(resetRendererSize);
   $('body').mousemove(function(e) {
     mouse(e.pageX, e.pageY);
@@ -61,6 +63,10 @@ $(function() {
 
   function start() {
     render();
+
+    setTimeout(function() {
+      active.idle = true;
+    }, 500);
   }
   start();
 
@@ -69,7 +75,7 @@ $(function() {
 
     updateWayneMarker();
 
-    idleWayne();
+    if (active.idle) idleWayne();
 
     renderer.render(scene, camera);
   }
@@ -82,6 +88,10 @@ $(function() {
       
       var scale = 3;
       mesh.scale.set(scale, scale, scale);
+
+      mesh.position.set(0, 1, -0.25);
+
+      mesh.rotation.x = 1.2;
 
       callback(mesh);
     });
@@ -112,9 +122,16 @@ $(function() {
   function idleWayne() {
     if (!wayne) return;
 
-    wayne.rotation.y += 0.02;
+    var rapping = backToYou.currentTime > 31.7;
 
-    var scalar = 0.05;
+    if (rapping) wayne.rotation.y += 0.005;
+
+    var fraction = backToYou.currentTime / backToYou.duration;
+
+    var scale = 3 + 4 * fraction;
+    wayne.scale.set(scale, scale, scale);
+
+    var scalar = (rapping)? 0.17 * fraction : 0.0;
 
     var vertices = wayne.geometry.vertices;
     for (var i = 0; i < 10; i++) {
