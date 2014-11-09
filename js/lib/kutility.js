@@ -1,5 +1,4 @@
-/* export something */
-module.exports = new Kutility;
+window.kt = new Kutility;
 
 /* constructor does nothing at this point */
 function Kutility() {

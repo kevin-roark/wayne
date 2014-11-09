@@ -58,6 +58,8 @@ $(function() {
 
   var active = {idle: false, ended: false};
 
+  var wayneRot = 0;
+
   $(window).resize(resetRendererSize);
   $('body').mousemove(function(e) {
     mouse(e.pageX, e.pageY);
@@ -130,6 +132,10 @@ $(function() {
     var position = fraction * end;
 
     wayneMarker.css('left', position + 'px');
+
+    console.log(wayneRot);
+    wayneRot += 0.1;
+    window.kt.rotate(wayneMarker, wayneRot);
   }
 
   function songIsOver() {
